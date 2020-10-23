@@ -66,7 +66,7 @@ def load_data(city, month, day):
     Returns:
         df - pandas DataFrame containing city data filtered by month and day
     """
-    
+
     # load data file into a dataframe
     df =  pd.read_csv(CITY_DATA[city])
 
@@ -76,7 +76,7 @@ def load_data(city, month, day):
     # extract month and day of week from Start Time to create new columns
     df['month'] = df['Start Time'].dt.month
     #print(df['month'])
-    df['day_of_week'] =  df['Start Time'].dt.weekday_name
+    df['day_of_week'] =  df['Start Time'].dt.day_name()
     #print(df['day_of_week']) #Testing Day of week code
     #print(df['Start Time'].dt.day)
     df['num_day_of_week'] = df['Start Time'].dt.dayofweek
@@ -86,7 +86,7 @@ def load_data(city, month, day):
         # use the index of the months list to get the corresponding int
         months = ['january', 'february', 'march', 'april', 'may', 'june']
         month = months.index(month) + 1
-    
+
         # filter by month to create the new dataframe
         df = df[df['month'] == month]
 
@@ -108,70 +108,70 @@ def time_stats(df):
 
     print('\nCalculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
-    
+
     # TO DO: display the most common month
-    
+
     months = ['January', 'February', 'March', 'April', 'May', 'June'] # Decided to convert months back last minute
     popular_month = months[df['month'].mode()[0]-1] #Get the most common value of month
     month_table = df.groupby('month').count()[['Start Time']].sort_values(by='Start Time',ascending=False) # Create a table of months and count of start times and order by most popular day
-    
+
     # TO DO: display the most common day of week
     day_of_week_translator = {0: 'Monday',1: 'Tuesday',2: 'Wednesday',3: 'Thursday',4: 'Friday',5: 'Saturday',6: 'Sunday'} ## create a 'lookup' dictionary for the numeric days
     num_popular_day = df['num_day_of_week'].mode()[0]  #determine the most popular day, numeric
     popular_day = day_of_week_translator[num_popular_day]  # Find the name of the popular day from the lookup dictionary
     day_table = df.groupby('day_of_week').count()[['Start Time']].sort_values(by='Start Time',ascending=False) # Create a table of days and count of start times and order by most popular day
     # Refered to this https://data36.com/pandas-tutorial-2-aggregation-and-grouping/ for some data aggregation material
-    
+
     most_monthly_trips = month_table.iloc[0]['Start Time'] #Got .iloc from stackoverflow question and https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html
     most_day_trips = day_table.iloc[0]['Start Time']
     ### Note the methods above won't return both values if there are ties, should add some form of checking or just return the entire mode!
-    
+
     if len(month_table) == 1 and len(day_table) == 1: #If the length the tables are both 1, we selected a month and day.
         print('\n\nYou selected the month {}, and day {}, so those are most popular!'.format(popular_month,popular_day))
         print('\nThere are {} trips for that day of that month.'.format(most_monthly_trips))
-        
+
     elif len(month_table) == 1 and len(day_table) != 1: # Month was selected but not the day
         print("You selected the month {} so that's the most popular!.".format(popular_month))
-        print('\nThere are {} trips in that month.'.format(most_monthly_trips))     
+        print('\nThere are {} trips in that month.'.format(most_monthly_trips))
         print('\n\nYou selected all the days, and the most popular day is {}.'.format(popular_day))
         print('\nHere is the count of "Start Time" for all the days (in order of most popular):\n\n',day_table)
-        
+
     elif len(month_table) != 1 and len(day_table) == 1:  # Day was selected but not the month
         print('You selected all the months, and the most popular is {}.'.format(popular_month))
         print('\nHere is the count of "Start Time" for all the months (in order of most popular):\n\n',month_table)
         print("\n\nYou selected the day {} so that's the most popular!".format(popular_day))
         print('\nThere are {} trips in that day.'.format(most_day_trips))
-        
+
     else: # Neither month nor day was selected
         print('You selected all the months, and the most popular is {}.'.format(popular_month))
         print('\nHere is the count of "Start Time" for all the months (in order of most popular):\n\n',month_table)
         print('\n\nYou selected all the days, and the most popular day is {}.'.format(popular_day))
         print('\nHere is the count of "Start Time" for all the days (in order of most popular):\n\n',day_table)
-    
-    
+
+
     # TO DO: display the most common start hour
     df['hour'] = df['Start Time'].dt.hour #Create an 'hour' column and convert start time to hour
-    popular_hour = (df['hour'].mode()[0])    #Find the most common hour from that col     
+    popular_hour = (df['hour'].mode()[0])    #Find the most common hour from that col
     hour_table = df.groupby('hour').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of hour start times, grouped by hour, descending
     total_trans = int(hour_table['Start Time'].sum()) # Calculate how many transactions there are
-    hour_table['Percentage'] = hour_table['Start Time'] / total_trans * 100 #Create a colunm that calculates the percentage of the count of each hour 
+    hour_table['Percentage'] = hour_table['Start Time'] / total_trans * 100 #Create a colunm that calculates the percentage of the count of each hour
     #hour_table['Hour Percentage'] = df['Start Time'] / df['Start Time'].sum() * 100
     most_hour_trips = hour_table.iloc[0]['Start Time']
-    
-    
+
+
     print('\n\nThe most popular start hour for the selected month(s)/day(s) is {}'.format(popular_hour))
     print('\nThere are {} trips that occurred at that hour'.format(most_hour_trips))
     print('\nThe percentage of trips for each hour is shown below:\n\n',hour_table['Percentage'])
 
-    
+
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
 
-    
-    
-    
-    
+
+
+
+
 def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
 
@@ -183,12 +183,12 @@ def station_stats(df):
     #print(start_station_table)
     print('\nThe most commonly used start station is',start_station_table.index.values[0]) # Get the first row lable from the table
     print('\nThe Start Station was used',start_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
-    #print('test',start_station_table)   
-    
+    #print('test',start_station_table)
+
     # TO DO: display most commonly used end station
     end_station_table = df.groupby('End Station').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of counts of start station ordered most frequent to least
     #print('test',end_station_table)
-    
+
     print('\nThe most commonly used end station is',end_station_table.index.values[0]) # Get the first row lable from the table
     print('\nThe End Station was used',end_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
 
@@ -197,16 +197,16 @@ def station_stats(df):
     print('\nThe most common combination of start station and end station was',df['start_end_station'].mode()[0])
     print('\nHere is the top ten combinations:\n\n',df['start_end_station'].value_counts()[:10])
 
-      
+
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
 
-    
-    
-    
-    
+
+
+
+
 def trip_duration_stats(df):
     """Displays statistics on the total and average trip duration."""
 
@@ -222,7 +222,7 @@ def trip_duration_stats(df):
     total_travel_time = pd.to_timedelta(total_travel_time_seconds, unit='s') #Convert total_travel_time_seconds to hrs/minutes/seconds format
     #print(total_travel_time) #checking the line above
     print('The total travel time for this query is',total_travel_time,'(hh:mm:ss).')
-    
+
     # TO DO: display mean travel time
     average_travel_time_seconds = df['Trip Duration'].mean() #Average the travel time column, in seconds
     average_travel_time = pd.to_timedelta(average_travel_time_seconds, unit='s') #Convert average_travel_time_seconds to hrs/minutes/seconds format
@@ -232,20 +232,20 @@ def trip_duration_stats(df):
     std_travel_time_seconds = df['Trip Duration'].std() #standard deviation of the travel time column, in seconds
     std_travel_time = pd.to_timedelta(std_travel_time_seconds, unit='s') #Convert average_travel_time_seconds to hrs/minutes/seconds format
     print('\nThe standard deviation of the travel time for this query is',std_travel_time,'(hh:mm:ss).')
-    
+
     df['Travel Time'] = pd.to_timedelta(df['Trip Duration'], unit='s')
     df.sort_values(by='Travel Time', ascending=False, inplace=True)
     print('\nHere is the top ten longest trips:\n\n',df['Travel Time'][:10])
-    
+
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
 
-    
-    
-    
-    
-    
+
+
+
+
+
 
 def user_stats(df):
     """Displays statistics on bikeshare users."""
@@ -269,7 +269,7 @@ def user_stats(df):
         else:
             print('\n The counts of gender for this search were:\n',gender)
             break
-    
+
     # TO DO: Display earliest, most recent, and most common year of birth
     while True:
         try:
@@ -288,7 +288,7 @@ def user_stats(df):
             print('\n The latest birth year for this search was:\n',latest_birth_year)
             print('\nThat is approximately {} years old!'.format(youngest_person_age))
             break
-            
+
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -299,9 +299,9 @@ def main():
         city, month, day = get_filters()
         df = load_data(city, month, day)
 
-        
-        
-        
+
+
+
         time_stats(df)
         next_stat = input('\nThose were the time stats. Press enter to continue to station stats!\n')
         station_stats(df)
@@ -309,8 +309,8 @@ def main():
         trip_duration_stats(df)
         next_stat = input('\nThose were the trip duration stats? Press enter to continue to user stats!.\n')
         user_stats(df)
-        
-        
+
+
         ### Code for user to view individual data begins here
         while True:
             see_data = input('\nWould you like to see individual trip data? Yes or No.\n') #Get input to look at trip data
@@ -328,8 +328,8 @@ def main():
                     except ValueError:
                         print('That was not an integer!') #If a non-numeric is entered, ask again
                         continue
-                       
-                        
+
+
                 while True:
                     sort = input("\nHow would you like to sort the values? 'Start Time', 'End Time', 'Trip Duration', 'Start Station', or 'End Station' \n") #Get input on how to sort values
                     if sort.lower() not in ('start time', 'end time', 'trip duration', 'start station', 'end station'):
@@ -339,8 +339,8 @@ def main():
                         print('\nYou have selected {}.\n'.format(sort.title()))
                         df.sort_values(by=sort.title(), ascending=False, inplace=True)  #Sort df by the entered value
                         break
-                        
-                        
+
+
                 print(df[x:x+step]) #Print the first 'x' rows
                 if step >= len(df):
                     print('\nThat was the last of the data.\n') #if the step is larger than rows of data, we're alread at the end
@@ -355,14 +355,14 @@ def main():
                         x += step #If they want to continue and are not at end, add the step value and continue to show data
                         print(df[x:x+step])
                         if x + step >= len(df): #Check if the end of the data is reached
-                            print('\nThat was the last of the data.\n') 
+                            print('\nThat was the last of the data.\n')
                         else:
-                            print('That was rows {} thorugh {}.  There are {} rows remaining.'.format(x+1,x + step,len(df)-(x+step))) 
+                            print('That was rows {} thorugh {}.  There are {} rows remaining.'.format(x+1,x + step,len(df)-(x+step)))
                         continue
             break
             ### Code for user to view individual data ends here
-            
-            
+
+
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
             break
