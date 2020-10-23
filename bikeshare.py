@@ -260,34 +260,28 @@ def user_stats(df):
     # TO DO: Display counts of gender
     #gender = df['Gender'].value_counts(dropna=False)
     #print('\n The counts of gender for this search were:\n',gender)
-    while True:
-        try:
-            gender = df['Gender'].value_counts(dropna=False)
-        except KeyError:
-            print('\nThere is no gender data for this search!\n')
-            break
-        else:
-            print('\n The counts of gender for this search were:\n',gender)
-            break
+    if 'Gender' in df.columns:
+        gender = df['Gender'].value_counts(dropna=False)
+        print('\n The counts of gender for this search were:\n',gender)
+    else:
+        print('\nThere is no gender data for this search!\n')
+
+
 
     # TO DO: Display earliest, most recent, and most common year of birth
-    while True:
-        try:
-            most_common_birth_year = df['Birth Year'].mode()
-            earliest_birth_year = df['Birth Year'].min()
-            oldest_person_age = int(2017 - earliest_birth_year)
-            latest_birth_year = df['Birth Year'].max()
-            youngest_person_age = int(2017 - latest_birth_year)
-        except KeyError:
-            print('\nThere is no age data for this search!\n')
-            break
-        else:
-            print('\n The most common birth year for this search was:\n',most_common_birth_year)
-            print('\n The earliest birth year for this search was:\n',earliest_birth_year)
-            print('\nThat is approximately {} years old!'.format(oldest_person_age))
-            print('\n The latest birth year for this search was:\n',latest_birth_year)
-            print('\nThat is approximately {} years old!'.format(youngest_person_age))
-            break
+    if 'Birth Year' in df.columns:
+        most_common_birth_year = df['Birth Year'].mode()
+        earliest_birth_year = df['Birth Year'].min()
+        oldest_person_age = int(2017 - earliest_birth_year)
+        latest_birth_year = df['Birth Year'].max()
+        youngest_person_age = int(2017 - latest_birth_year)
+        print('\n The most common birth year for this search was:\n',most_common_birth_year)
+        print('\n The earliest birth year for this search was:\n',earliest_birth_year)
+        print('\nThat is approximately {} years old!'.format(oldest_person_age))
+        print('\n The latest birth year for this search was:\n',latest_birth_year)
+        print('\nThat is approximately {} years old!'.format(youngest_person_age))
+    else:
+        print('\nThere is no age data for this search!\n')
 
 
     print("\nThis took %s seconds." % (time.time() - start_time))
