@@ -176,19 +176,24 @@ def station_stats(df):
 
     # TO DO: display most commonly used start station
     start_station_table = df.groupby('Start Station').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of counts of start station ordered most frequent to least
-    print('\nThe most commonly used start station is',start_station_table.index.values[0]) # Get the first row lable from the table
-    print('\nThe Start Station was used',start_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
+    most_freq_start_station = start_station_table.index.values[0]
+    start_station_count = start_station_table.iloc[0]['Start Time']
+    print('\nThe most commonly used start station is {}'.format(most_freq_start_station)) # Get the first row lable from the table
+    print('\nThe Start Station was used {} times.'.format(start_station_count)) # get the first column value in the table
 
     # TO DO: display most commonly used end station
     end_station_table = df.groupby('End Station').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of counts of start station ordered most frequent to least
-
-    print('\nThe most commonly used end station is',end_station_table.index.values[0]) # Get the first row lable from the table
-    print('\nThe End Station was used',end_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
+    most_freq_end_station = end_station_table.index.values[0]
+    end_station_count = end_station_table.iloc[0]['Start Time']
+    print('\nThe most commonly used end station is {}'.format(most_freq_end_station)) # Get the first row lable from the table
+    print('\nThe End Station was used {} times.'.format(end_station_count)) # get the first column value in the table
 
     # TO DO: display most frequent combination of start station and end station trip
     df['start_end_station'] = df['Start Station'] + ' with ' + df['End Station']
-    print('\nThe most common combination of start station and end station was',df['start_end_station'].mode()[0])
-    print('\nHere is the top ten combinations:\n\n',df['start_end_station'].value_counts()[:10])
+    most_freq_station_combo = df['start_end_station'].mode()[0]
+    combo_station_count = df['start_end_station'].value_counts()[:10]
+    print('\nThe most common combination of start station and end station was {}'.format(most_freq_station_combo))
+    print('\nHere is the top ten combinations:\n\n {}'.format(combo_station_count))
 
 
 
@@ -210,21 +215,22 @@ def trip_duration_stats(df):
 
     total_travel_time_seconds = df['Trip Duration'].sum() #Sum the travel time column, in seconds -- Reference https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_timedelta.html
     total_travel_time = pd.to_timedelta(total_travel_time_seconds, unit='s') #Convert total_travel_time_seconds to hrs/minutes/seconds format
-    print('The total travel time for this query is',total_travel_time,'(hh:mm:ss).')
+    print('The total travel time for this query is {} (hh:mm:ss).'.format(total_travel_time))
 
     # TO DO: display mean travel time
     average_travel_time_seconds = df['Trip Duration'].mean() #Average the travel time column, in seconds
     average_travel_time = pd.to_timedelta(average_travel_time_seconds, unit='s') #Convert average_travel_time_seconds to hrs/minutes/seconds format
-    print('\nThe average travel time for this query is',average_travel_time,'(hh:mm:ss).')
+    print('\nThe average travel time for this query is {} (hh:mm:ss).'.format(average_travel_time))
 
     # Display the Standard Deviation of the travel time
     std_travel_time_seconds = df['Trip Duration'].std() #standard deviation of the travel time column, in seconds
     std_travel_time = pd.to_timedelta(std_travel_time_seconds, unit='s') #Convert average_travel_time_seconds to hrs/minutes/seconds format
-    print('\nThe standard deviation of the travel time for this query is',std_travel_time,'(hh:mm:ss).')
+    print('\nThe standard deviation of the travel time for this query is {} (hh:mm:ss).'.format(std_travel_time))
 
     df['Travel Time'] = pd.to_timedelta(df['Trip Duration'], unit='s')
     df.sort_values(by='Travel Time', ascending=False, inplace=True)
-    print('\nHere is the top ten longest trips:\n\n',df['Travel Time'][:10])
+    longest_trips = df['Travel Time'][:10]
+    print('\nHere is the top ten longest trips:\n\n {}'.format(longest_trips))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
