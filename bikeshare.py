@@ -75,10 +75,7 @@ def load_data(city, month, day):
 
     # extract month and day of week from Start Time to create new columns
     df['month'] = df['Start Time'].dt.month
-    #print(df['month'])
     df['day_of_week'] =  df['Start Time'].dt.day_name()
-    #print(df['day_of_week']) #Testing Day of week code
-    #print(df['Start Time'].dt.day)
     df['num_day_of_week'] = df['Start Time'].dt.dayofweek
 
     # filter by month if applicable
@@ -155,7 +152,6 @@ def time_stats(df):
     hour_table = df.groupby('hour').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of hour start times, grouped by hour, descending
     total_trans = int(hour_table['Start Time'].sum()) # Calculate how many transactions there are
     hour_table['Percentage'] = hour_table['Start Time'] / total_trans * 100 #Create a colunm that calculates the percentage of the count of each hour
-    #hour_table['Hour Percentage'] = df['Start Time'] / df['Start Time'].sum() * 100
     most_hour_trips = hour_table.iloc[0]['Start Time']
 
 
@@ -180,14 +176,11 @@ def station_stats(df):
 
     # TO DO: display most commonly used start station
     start_station_table = df.groupby('Start Station').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of counts of start station ordered most frequent to least
-    #print(start_station_table)
     print('\nThe most commonly used start station is',start_station_table.index.values[0]) # Get the first row lable from the table
     print('\nThe Start Station was used',start_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
-    #print('test',start_station_table)
 
     # TO DO: display most commonly used end station
     end_station_table = df.groupby('End Station').count()[['Start Time']].sort_values(by='Start Time',ascending=False) #Create a table of counts of start station ordered most frequent to least
-    #print('test',end_station_table)
 
     print('\nThe most commonly used end station is',end_station_table.index.values[0]) # Get the first row lable from the table
     print('\nThe End Station was used',end_station_table.iloc[0]['Start Time'],'times.') # get the first column value in the table
@@ -215,12 +208,8 @@ def trip_duration_stats(df):
 
     # TO DO: display total travel time
 
-    #df['travel_time'] = pd.to_timedelta(df['Trip Duration'], unit='s') #Created a "travel time" column to test converting seconds to hrs/minutes/seconds
-    #print(df) #checking the line above
     total_travel_time_seconds = df['Trip Duration'].sum() #Sum the travel time column, in seconds -- Reference https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.to_timedelta.html
-    #print(total_travel_time_seconds) #checking the line above
     total_travel_time = pd.to_timedelta(total_travel_time_seconds, unit='s') #Convert total_travel_time_seconds to hrs/minutes/seconds format
-    #print(total_travel_time) #checking the line above
     print('The total travel time for this query is',total_travel_time,'(hh:mm:ss).')
 
     # TO DO: display mean travel time
@@ -258,8 +247,6 @@ def user_stats(df):
     print('\n The types of users for this search were:\n\n',user_types)
 
     # TO DO: Display counts of gender
-    #gender = df['Gender'].value_counts(dropna=False)
-    #print('\n The counts of gender for this search were:\n',gender)
     if 'Gender' in df.columns:
         gender = df['Gender'].value_counts(dropna=False)
         print('\n The counts of gender for this search were:\n',gender)
