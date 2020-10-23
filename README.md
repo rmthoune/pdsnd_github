@@ -8,6 +8,8 @@ The bikeshare.py program explores bikeshare data from 3 major US cities: Chicago
 
 Includes the following files:
 bikeshare.py
+
+Requires the following data file:
 chicago.csv
 new_york_city.csv
 washington.csv
